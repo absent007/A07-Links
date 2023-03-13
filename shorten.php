@@ -32,6 +32,6 @@ if (isset($_SERVER['REQUEST_URI'])) {
 }
 
 // If the request is not a valid URL shortening or redirection request, return a 404 error
-http_response_code(404);
+http_response_code(301);
 echo 'Page not found.';
 exit();
