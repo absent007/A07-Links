@@ -1,21 +1,124 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>URL Shortener</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="shorten.js"></script>
-  </head>
-  <body>
-    <h1>URL Shortener</h1>
-    <form id="shorten-form">
-      <label for="long-url">Enter URL to Shorten:</label><br>
-      <input type="text" id="long-url" name="long-url" placeholder="Enter Long URL" required><br>
-      <input type="submit" value="Shorten">
-    </form>
-    <div id="short-url" style="display: none;">
-      <p>Short URL:</p>
-      <input type="text" id="short-url-input" name="short-url-input">
-      <button id="copy-button">Copy</button>
-    </div>
-  </body>
+<head>
+	<meta charset="UTF-8">
+	<title>URL Shortener</title>
+	<style>
+		body {
+			font-family: sans-serif;
+			margin: 0;
+			padding: 0;
+		}
+
+		header {
+			background-color: #4CAF50;
+			color: white;
+			padding: 10px;
+		}
+
+		h1 {
+			margin: 0;
+		}
+
+		main {
+			padding: 20px;
+		}
+
+		form {
+			display: flex;
+			flex-direction: column;
+			margin-bottom: 20px;
+		}
+
+		label {
+			margin-bottom: 5px;
+			font-weight: bold;
+		}
+
+		input[type=url] {
+			padding: 10px;
+			font-size: 16px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			margin-bottom: 10px;
+		}
+
+		button[type=submit] {
+			background-color: #4CAF50;
+			color: white;
+			padding: 10px;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+
+		button[type=submit]:hover {
+			background-color: #3E8E41;
+		}
+
+		.shortened-url {
+			background-color: #f2f2f2;
+			padding: 10px;
+			border-radius: 5px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 10px;
+		}
+
+		.shortened-url p {
+			margin: 0;
+		}
+
+		.shortened-url a {
+			color: #4CAF50;
+			font-weight: bold;
+			text-decoration: none;
+		}
+
+		.copy-to-clipboard {
+			background-color: #4CAF50;
+			color: white;
+			padding: 10px;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+
+		.copy-to-clipboard:hover {
+			background-color: #3E8E41;
+		}
+
+		.copy-to-clipboard.success {
+			background-color: #3E8E41;
+		}
+
+		.copy-to-clipboard.success:hover {
+			background-color: #1B5E20;
+		}
+
+		.copy-to-clipboard.failure {
+			background-color: #F44336;
+		}
+
+		.copy-to-clipboard.failure:hover {
+			background-color: #D32F2F;
+		}
+
+	</style>
+</head>
+<body>
+	<header>
+		<h1>URL Shortener</h1>
+	</header>
+	<main>
+		<form id="shorten-form">
+			<label for="long-url">Enter the URL you want to shorten:</label>
+			<input type="url" id="long-url" name="long-url" required>
+			<button type="submit">Shorten</button>
+		</form>
+		<div id="shortened-urls"></div>
+	</main>
+	<script src="shorten.js"></script>
+</body>
 </html>
