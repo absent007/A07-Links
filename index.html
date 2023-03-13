@@ -1,44 +1,21 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>URL Shortener</title>
-</head>
-<body>
-  <h1>URL Shortener</h1>
-  <form id="shorten-form">
-    <label for="long-url">Long URL:</label>
-    <input type="text" id="long-url" name="long-url"><br><br>
-    <button type="submit">Shorten</button>
-  </form>
-  <p id="short-url"></p>
-  <script>
-    const shortenForm = document.getElementById('shorten-form');
-    const shortUrlElement = document.getElementById('short-url');
-
-    shortenForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-      const longUrl = document.getElementById('long-url').value;
-      fetch('/shorten.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: 'long-url=' + encodeURIComponent(longUrl)
-      })
-      .then(response => response.json())
-      .then(data => {
-        shortUrlElement.innerHTML = `<a href="${data['short-url']}">${data['short-url']}</a> <button id="copy-button">Copy</button>`;
-        const copyButton = document.getElementById('copy-button');
-        copyButton.addEventListener('click', function() {
-          navigator.clipboard.writeText(data['short-url']);
-          alert('Copied to clipboard!');
-        });
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        shortUrlElement.innerHTML = 'An error occurred while shortening the URL.';
-      });
-    });
-  </script>
-</body>
+  <head>
+    <title>URL Shortener</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="shorten.js"></script>
+  </head>
+  <body>
+    <h1>URL Shortener</h1>
+    <form id="shorten-form">
+      <label for="long-url">Enter URL to Shorten:</label><br>
+      <input type="text" id="long-url" name="long-url" placeholder="Enter Long URL" required><br>
+      <input type="submit" value="Shorten">
+    </form>
+    <div id="short-url" style="display: none;">
+      <p>Short URL:</p>
+      <input type="text" id="short-url-input" name="short-url-input">
+      <button id="copy-button">Copy</button>
+    </div>
+  </body>
 </html>
