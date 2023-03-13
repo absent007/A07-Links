@@ -12,23 +12,20 @@
     <button type="submit">Shorten URL</button>
     <button id="copyButton" class="btn btn-primary">Copy</button>
   </form>
-  
+
+  <div id="short-link-container" style="display: none;">
+    <p>Your shortened URL:</p>
+    <input type="text" id="short-link">
+  </div>
+
   <script>
     const urlMap = {};
+    const delaySeconds = 3;
 
     function generateShortUrl() {
       const shortUrl = Math.random().toString(36).substring(2, 8);
       return shortUrl;
     }
-
-    document.querySelector('form').addEventListener('submit', function(event) {
-      event.preventDefault();
-      const longUrl = document.querySelector('#long-url').value;
-      const shortUrl = generateShortUrl();
-      urlMap[shortUrl] = longUrl;
-      const shortUrlDisplay = window.location.origin + '/' + shortUrl;
-      alert('Short URL: ' + shortUrlDisplay);
-    });
 
     function redirect() {
       const shortUrl = window.location.pathname.substring(1);
@@ -38,20 +35,26 @@
       }
     }
 
+    document.querySelector('form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const longUrl = document.querySelector('#long-url').value;
+      const shortUrl = generateShortUrl();
+      urlMap[shortUrl] = longUrl;
+      const shortUrlDisplay = window.location.origin + '/' + shortUrl;
+      document.querySelector('#short-link').value = shortUrlDisplay;
+      document.querySelector('#short-link-container').style.display = 'block';
+    });
+
     if (window.location.pathname !== '/') {
-      setTimeout(redirect, 3000);
+      setTimeout(redirect, delaySeconds * 1000);
     }
 
-    const copyButton = document.getElementById('copyButton');
-    copyButton.addEventListener('click', function() {
-      const shortUrlDisplay = window.location.href;
-      const textArea = document.createElement('textarea');
-      textArea.value = shortUrlDisplay;
-      document.body.appendChild(textArea);
-      textArea.select();
-      document.execCommand('copy');
-      document.body.removeChild(textArea);
-      alert('Short URL copied to clipboard: ' + shortUrlDisplay);
+    document.getElementById("copyButton").addEventListener("click", function() {
+      var copyText = document.getElementById("short-link");
+      copyText.select();
+      copyText.setSelectionRange(0, 99999);
+      document.execCommand("copy");
+      alert("Copied the shortened URL to the clipboard: " + copyText.value);
     });
   </script>
 </body>
