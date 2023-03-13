@@ -1,4 +1,11 @@
 RewriteEngine On
+
+# Redirect all requests to index.php
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ /shorten.php [L]
+RewriteRule ^(.*)$ index.php/$1 [L]
+
+# Redirect short URLs to their corresponding long URLs
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([0-9a-zA-Z]{6})$ index.php?short=$1 [L]
