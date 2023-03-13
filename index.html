@@ -10,6 +10,8 @@
     <label for="long-url">Enter a long URL:</label>
     <input type="text" id="long-url" name="long-url">
     <button type="submit">Shorten URL</button>
+    <button id="copyButton" class="btn btn-primary">Copy</button>
+
   </form>
   
   <script>
@@ -38,6 +40,13 @@
     if (window.location.pathname !== '/') {
       setTimeout(redirect, 5000);
     }
+    document.getElementById("copyButton").addEventListener("click", function() {
+  var copyText = document.getElementById("shortLink");
+  copyText.select();
+  copyText.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+});
+
   </script>
 </body>
 </html>
