@@ -1,6 +1,11 @@
 <?php
+
+session_start();
+
 // Define the URL map as an empty array
-$urlMap = array();
+if (!isset($_SESSION['urlMap'])) {
+  $_SESSION['urlMap'] = array();
+}
 
 // If the request is to shorten a URL
 if (isset($_POST['long-url'])) {
@@ -8,13 +13,13 @@ if (isset($_POST['long-url'])) {
   $longUrl = $_POST['long-url'];
 
   // Generate a random short URL
-  $shortUrl = substr(md5($longUrl), 0, 6);
+  $shortUrl = substr(md5($longUrl . time()), 0, 6);
 
   // Add the short URL to the URL map
-  $urlMap[$shortUrl] = $longUrl;
+  $_SESSION['urlMap'][$shortUrl] = $longUrl;
 
   // Return the shortened URL as JSON
-  echo json_encode(array('short-url' => 'https://' . $_SERVER['HTTP_HOST'] . '/' . $shortUrl));
+  echo json_encode(array('short-url' => $shortUrl));
   exit();
 }
 
@@ -24,15 +29,21 @@ if (isset($_SERVER['REQUEST_URI'])) {
   $shortUrl = substr($_SERVER['REQUEST_URI'], 1);
 
   // If the short URL is in the URL map, redirect to the long URL
-  if (isset($urlMap[$shortUrl])) {
-    // Add a 3-second delay before redirecting
-    sleep(3);
-    header('Location: ' . $urlMap[$shortUrl]);
+  if (isset($_SESSION['urlMap'][$shortUrl])) {
+    $longUrl = $_SESSION['urlMap'][$shortUrl];
+    unset($_SESSION['urlMap'][$shortUrl]);
+    echo '<!DOCTYPE html>
+          <html>
+            <head>
+              <title>Redirecting...</title>
+              <meta http-equiv="refresh" content="3;url=' . $longUrl . '">
+            </head>
+            <body>
+              <p>Redirecting to ' . $longUrl . ' in 3 seconds...</p>
+            </body>
+          </html>';
     exit();
   }
 }
 
-// If the request is not a valid URL shortening or redirection request, return a 404 error
-http_response_code(404);
-echo 'Page not found.';
-exit();
+// If the request is not a valid
