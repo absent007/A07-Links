@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>URL Shortener</title>
+</head>
+<body>
+  <h1>URL Shortener</h1>
+  <form>
+    <label for="long-url">Enter a long URL:</label>
+    <input type="text" id="long-url" name="long-url">
+    <button type="submit">Shorten URL</button>
+  </form>
+  
+  <script>
+    const urlMap = {};
+
+    function generateShortUrl() {
+      const shortUrl = Math.random().toString(36).substring(2, 8);
+      return shortUrl;
+    }
+
+    document.querySelector('form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const longUrl = document.querySelector('#long-url').value;
+      const shortUrl = generateShortUrl();
+      urlMap[shortUrl] = longUrl;
+      const shortUrlDisplay = window.location.origin + '/' + shortUrl;
+      alert('Short URL: ' + shortUrlDisplay);
+    });
+    
+    function redirect() {
+      const shortUrl = window.location.pathname.substring(1);
+      const longUrl = urlMap[shortUrl];
+      window.location.replace(longUrl);
+    }
+
+    if (window.location.pathname !== '/') {
+      setTimeout(redirect, 5000);
+    }
+  </script>
+</body>
+</html>
