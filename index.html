@@ -1,61 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
   <title>URL Shortener</title>
 </head>
 <body>
   <h1>URL Shortener</h1>
-  <form>
-    <form action="shorten.php" method="POST">
-    <label for="long-url">Enter a long URL:</label>
-    <input type="text" id="long-url" name="long-url">
-    <button type="submit">Shorten URL</button>
-    <button id="copyButton" class="btn btn-primary">Copy</button>
+  <form id="shorten-form">
+    <label for="long-url">Long URL:</label>
+    <input type="text" id="long-url" name="long-url"><br><br>
+    <button type="submit">Shorten</button>
   </form>
-
-  <div id="short-link-container" style="display: none;">
-    <p>Your shortened URL:</p>
-    <input type="text" id="short-link">
-  </div>
-
+  <p id="short-url"></p>
   <script>
-    const urlMap = {};
-    const delaySeconds = 3;
+    const shortenForm = document.getElementById('shorten-form');
+    const shortUrlElement = document.getElementById('short-url');
 
-    function generateShortUrl() {
-      const shortUrl = Math.random().toString(36).substring(2, 8);
-      return shortUrl;
-    }
-
-    function redirect() {
-      const shortUrl = window.location.pathname.substring(1);
-      const longUrl = urlMap[shortUrl];
-      if (longUrl) {
-        window.location.replace(longUrl);
-      }
-    }
-
-    document.querySelector('form').addEventListener('submit', function(event) {
-      event.preventDefault();
-      const longUrl = document.querySelector('#long-url').value;
-      const shortUrl = generateShortUrl();
-      urlMap[shortUrl] = longUrl;
-      const shortUrlDisplay = window.location.origin + '/' + shortUrl;
-      document.querySelector('#short-link').value = shortUrlDisplay;
-      document.querySelector('#short-link-container').style.display = 'block';
-    });
-
-    if (window.location.pathname !== '/') {
-      setTimeout(redirect, delaySeconds * 1000);
-    }
-
-    document.getElementById("copyButton").addEventListener("click", function() {
-      var copyText = document.getElementById("short-link");
-      copyText.select();
-      copyText.setSelectionRange(0, 99999);
-      document.execCommand("copy");
-      alert("Copied the shortened URL to the clipboard: " + copyText.value);
+    shortenForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const longUrl = document.getElementById('long-url').value;
+      fetch('/shorten.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: 'long-url=' + encodeURIComponent(longUrl)
+      })
+      .then(response => response.json())
+      .then(data => {
+        shortUrlElement.innerHTML = `<a href="${data['short-url']}">${data['short-url']}</a> <button id="copy-button">Copy</button>`;
+        const copyButton = document.getElementById('copy-button');
+        copyButton.addEventListener('click', function() {
+          navigator.clipboard.writeText(data['short-url']);
+          alert('Copied to clipboard!');
+        });
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        shortUrlElement.innerHTML = 'An error occurred while shortening the URL.';
+      });
     });
   </script>
 </body>
