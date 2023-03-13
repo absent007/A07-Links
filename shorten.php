@@ -1,5 +1,4 @@
 <?php
-
 // Define the URL map as an empty array
 $urlMap = array();
 
@@ -15,7 +14,7 @@ if (isset($_POST['long-url'])) {
   $urlMap[$shortUrl] = $longUrl;
 
   // Return the shortened URL as JSON
-  echo json_encode(array('short-url' => $shortUrl));
+  echo json_encode(array('short-url' => 'https://' . $_SERVER['HTTP_HOST'] . '/' . $shortUrl));
   exit();
 }
 
@@ -26,12 +25,14 @@ if (isset($_SERVER['REQUEST_URI'])) {
 
   // If the short URL is in the URL map, redirect to the long URL
   if (isset($urlMap[$shortUrl])) {
+    // Add a 3-second delay before redirecting
+    sleep(3);
     header('Location: ' . $urlMap[$shortUrl]);
     exit();
   }
 }
 
 // If the request is not a valid URL shortening or redirection request, return a 404 error
-http_response_code(301);
+http_response_code(404);
 echo 'Page not found.';
 exit();
