@@ -10,11 +10,9 @@
     <label for="long-url">Enter a long URL:</label>
     <input type="text" id="long-url" name="long-url">
     <button type="submit">Shorten URL</button>
+    <button id="copyButton" class="btn btn-primary">Copy</button>
   </form>
-  <br>
-  <p id="short-url-display"></p>
-  <button id="copy-button">Copy Short URL</button>
-
+  
   <script>
     const urlMap = {};
 
@@ -29,34 +27,31 @@
       const shortUrl = generateShortUrl();
       urlMap[shortUrl] = longUrl;
       const shortUrlDisplay = window.location.origin + '/' + shortUrl;
-      document.querySelector('#short-url-display').innerText = 'Short URL: ' + shortUrlDisplay;
-      document.querySelector('#copy-button').dataset.shortUrl = shortUrlDisplay;
-      setTimeout(function() {
-        window.location.replace(shortUrlDisplay);
-      }, 3000);
+      alert('Short URL: ' + shortUrlDisplay);
     });
-    
-    if (window.location.pathname !== '/') {
+
+    function redirect() {
       const shortUrl = window.location.pathname.substring(1);
       const longUrl = urlMap[shortUrl];
       if (longUrl) {
-        setTimeout(function() {
-          window.location.replace(longUrl);
-        }, 3000);
-      } else {
-        alert('Invalid short URL');
+        window.location.replace(longUrl);
       }
     }
 
-    document.querySelector('#copy-button').addEventListener('click', function() {
-      const shortUrlDisplay = this.dataset.shortUrl;
-      const tempInput = document.createElement('input');
-      tempInput.value = shortUrlDisplay;
-      document.body.appendChild(tempInput);
-      tempInput.select();
+    if (window.location.pathname !== '/') {
+      setTimeout(redirect, 3000);
+    }
+
+    const copyButton = document.getElementById('copyButton');
+    copyButton.addEventListener('click', function() {
+      const shortUrlDisplay = window.location.href;
+      const textArea = document.createElement('textarea');
+      textArea.value = shortUrlDisplay;
+      document.body.appendChild(textArea);
+      textArea.select();
       document.execCommand('copy');
-      document.body.removeChild(tempInput);
-      alert('Copied to clipboard');
+      document.body.removeChild(textArea);
+      alert('Short URL copied to clipboard: ' + shortUrlDisplay);
     });
   </script>
 </body>
